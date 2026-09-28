@@ -91,17 +91,7 @@ or select:
 Debug → Start Debugging
 ```
 
-## 📸 Screenshots
 
-Add screenshots of the calculator interface here.
-
-For example:
-
-```markdown
-![Calculator Interface](screenshots/calculator.png)
-```
-
-Create a `screenshots` folder in the repository and place your application screenshots there.
 
 ## 🎯 Project Goals
 
