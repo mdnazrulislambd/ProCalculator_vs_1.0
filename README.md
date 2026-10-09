@@ -128,3 +128,5 @@ GitHub: [@mdnazrulislambd](https://github.com/mdnazrulislambd)
 ---
 
 ⭐ If you find this project useful, consider giving it a star.
+
+[![Architecture diagram of mdnazrulislambd/procalculator_vs_1.0](https://gitdiagram.com/mdnazrulislambd/procalculator_vs_1.0/diagram.png)](https://gitdiagram.com/mdnazrulislambd/procalculator_vs_1.0?utm_source=readme&utm_medium=picture)
