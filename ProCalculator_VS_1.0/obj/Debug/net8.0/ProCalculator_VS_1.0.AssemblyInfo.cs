@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyDescriptionAttribute("A scientific calculator for the console, built with C# and .NET.")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7ad2220a410fcaeed1a3cf7c716f3bd14c81f902")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6db34cc096956bcc0e111e7fb428b8b05c9f35da")]
 [assembly: System.Reflection.AssemblyProductAttribute("ProCalculator")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ProCalculator")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
