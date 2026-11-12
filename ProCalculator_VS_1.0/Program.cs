@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace ProCalculator;
 
-namespace ScientificCalculator
+internal static class Program
 {
-    class Program
+    private static void Main()
     {
-        static void Main(string[] args)
-        {
-            CalculatorEngine engine = new CalculatorEngine();
-            engine.Run();
-        }
+        new CalculatorEngine().Run();
     }
 }

@@ -1,0 +1,25 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore
+        run: dotnet restore ProCalculator_VS_1.0.sln
+
+      - name: Build
+        run: dotnet build ProCalculator_VS_1.0.sln -c Release --no-restore
+
+      - name: Test
+        run: dotnet test ProCalculator_VS_1.0.sln -c Release --no-build

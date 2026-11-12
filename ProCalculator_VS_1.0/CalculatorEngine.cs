@@ -1,125 +1,166 @@
-﻿using System;
+﻿namespace ProCalculator;
 
-namespace ScientificCalculator
+public class CalculatorEngine
 {
-    public class CalculatorEngine
-    {
-        private InputHandler input = new InputHandler();
-        private OutputHandler output = new OutputHandler();
-        private BasicOprations basic = new BasicOprations();
-        private ScientificOperations scientific = new ScientificOperations();
-        private MemoryManager memory = new MemoryManager();
-        private HistoryManager history = new HistoryManager();
+    private readonly InputHandler input = new();
+    private readonly OutputHandler output = new();
+    private readonly BasicOperations basic = new();
+    private readonly ScientificOperations scientific = new();
+    private readonly MemoryManager memory = new();
+    private readonly HistoryManager history = new();
+    private readonly ThemeManager theme = new();
 
-        public void Run()
+    private double lastResult;
+
+    public void Run()
+    {
+        try
         {
             while (true)
             {
-                Console.Clear();
+                output.Clear();
                 output.ShowMenu();
 
-                int choice = input.GetIntInput();
+                input.LastAnswer = lastResult;
+                input.MemoryValue = memory.Recall();
+
+                int choice = input.GetMenuChoice();
 
                 if (choice == 0)
                 {
-                    Console.WriteLine("Exiting calculator.....");
+                    output.Print("Thank you for using ProCalculator!");
                     break;
                 }
 
-                double result = 0;
-
                 try
                 {
-                    switch (choice)
-                    {
-                        case 1:
-                            result = basic.Add(input.GetDouble(), input.GetDouble());
-                            break;
-                        case 2:
-                            result = basic.Subtract(input.GetDouble(), input.GetDouble());
-                            break;
-                        case 3:
-                            result = basic.Multiply(input.GetDouble(), input.GetDouble());
-                            break;
-                        case 4:
-                            result = basic.Divide(input.GetDouble(), input.GetDouble());
-                            break;
-                        case 5:
-                            result = scientific.Sqrt(input.GetDouble());
-                            break;
-                        case 6:
-                            result = scientific.power(input.GetDouble(), input.GetDouble());
-                            break;
-                        case 7:
-                            result = scientific.Sin(input.GetDouble());
-                            break;
-                        case 8:
-                            result = scientific.Cos(input.GetDouble());
-                            break;
-                        case 9:
-                            result = scientific.Tan(input.GetDouble());
-                            break;
-                        case 10:
-                            result = scientific.Log(input.GetDouble());
-                            break;
-                        case 11:
-                            memory.Store(input.GetDouble());
-                            output.Print("Stored in memory.");
-                            continuePromt();
-                            continue;
-                        case 12:
-                            result = memory.Recall();
-                            break;
-                        case 13:
-                            history.ShowHistory();
-                            continuePromt();
-                            continue;
-                        default:
-                            output.Print("Invalid choice.");
-                            continuePromt();
-                            continue;
-                    }
-
-                    output.Print("Result: " + result);
-                    history.Add(result);
-
-                    continuePromt();
+                    Execute(choice);
                 }
-                catch (Exception ex)
+                catch (Exception ex) when (ex is not InputClosedException)
                 {
                     output.Print("Error: " + ex.Message);
-                    continuePromt();
                 }
+
+                WaitForUser();
             }
         }
-
-        private void continuePromt()
+        catch (InputClosedException)
         {
-            while (true)
-            {
-
-                Console.WriteLine("\nDo you want to continue? (Y/N): ");
-                string choice = Console.ReadLine();
-
-                if (choice == null)
-                    continue;
-
-                choice = choice.ToLower();
-
-                if (choice == "y")
-                {
-                    return;
-                }
-                else if (choice == "n")
-                {
-                    Console.WriteLine("Thank You for using the calculator!");
-                    Environment.Exit(0);
-                }
-                else
-                {
-                    Console.WriteLine("Invalid input! Pleace enter Y or N.");
-                }
-            }
+            output.Print("Input closed. Exiting calculator.");
         }
+        finally
+        {
+            theme.Reset();
+        }
+    }
+
+    private void Execute(int choice)
+    {
+        switch (choice)
+        {
+            case 1: Binary("+", basic.Add); break;
+            case 2: Binary("-", basic.Subtract); break;
+            case 3: Binary("*", basic.Multiply); break;
+            case 4: Binary("/", basic.Divide); break;
+            case 5: Unary("sqrt", scientific.Sqrt); break;
+            case 6: Binary("^", scientific.Power); break;
+            case 7: Unary("sin", scientific.Sin, "Angle in degrees"); break;
+            case 8: Unary("cos", scientific.Cos, "Angle in degrees"); break;
+            case 9: Unary("tan", scientific.Tan, "Angle in degrees"); break;
+            case 10: Unary("log", scientific.Log); break;
+            case 11: StoreMemory(); break;
+            case 12: Record("MR", memory.Recall()); break;
+            case 13: output.ShowHistory(history.Entries); break;
+            case 14: Unary("ln", scientific.Ln); break;
+            case 15: Unary("sq", scientific.Square); break;
+            case 16: Unary("cube", scientific.Cube); break;
+            case 17: Unary("fact", scientific.Factorial, "Whole number"); break;
+            case 18: Percentage(); break;
+            case 19: MemoryAdd(); break;
+            case 20: MemorySubtract(); break;
+            case 21: ClearMemory(); break;
+            case 22: ClearHistory(); break;
+            case 23: ChangeTheme(); break;
+            default:
+                output.Print("Invalid choice. Enter a number from the menu or a shortcut (for example +, sqrt, q).");
+                break;
+        }
+    }
+
+    private void Binary(string symbol, Func<double, double, double> operation)
+    {
+        double a = input.GetDouble("First number");
+        double b = input.GetDouble("Second number");
+        Record($"{NumberFormatter.Format(a)} {symbol} {NumberFormatter.Format(b)}", operation(a, b));
+    }
+
+    private void Unary(string name, Func<double, double> operation, string label = "Number")
+    {
+        double x = input.GetDouble(label);
+        Record($"{name}({NumberFormatter.Format(x)})", operation(x));
+    }
+
+    private void Percentage()
+    {
+        double percent = input.GetDouble("Percentage");
+        double value = input.GetDouble("Of number");
+        Record($"{NumberFormatter.Format(percent)}% of {NumberFormatter.Format(value)}", basic.Percent(value, percent));
+    }
+
+    private void StoreMemory()
+    {
+        double value = input.GetDouble("Value to store");
+        memory.Store(value);
+        output.Print("Stored in memory: " + NumberFormatter.Format(value));
+    }
+
+    private void MemoryAdd()
+    {
+        double value = input.GetDouble("Value to add to memory");
+        memory.Add(value);
+        output.Print("Memory is now: " + NumberFormatter.Format(memory.Recall()));
+    }
+
+    private void MemorySubtract()
+    {
+        double value = input.GetDouble("Value to subtract from memory");
+        memory.Subtract(value);
+        output.Print("Memory is now: " + NumberFormatter.Format(memory.Recall()));
+    }
+
+    private void ClearMemory()
+    {
+        memory.Clear();
+        output.Print("Memory cleared.");
+    }
+
+    private void ClearHistory()
+    {
+        history.Clear();
+        output.Print("History cleared.");
+    }
+
+    private void ChangeTheme()
+    {
+        theme.Toggle();
+        output.Print("Theme: " + theme.Name);
+    }
+
+    private void Record(string expression, double result)
+    {
+        if (!Validator.IsFinite(result))
+            throw new ArithmeticException("The result is too large or is not a real number.");
+
+        lastResult = result;
+        string formatted = NumberFormatter.Format(result);
+        output.Print("Result: " + formatted);
+        history.Add($"{expression} = {formatted}");
+    }
+
+    private void WaitForUser()
+    {
+        output.Print("");
+        output.Print("Press Enter to return to the menu...");
+        input.ReadLine("");
     }
 }

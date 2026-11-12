@@ -1,132 +1,104 @@
 # 🧮 ProCalculator VS 1.0
 
-A desktop **calculator application built with C# and Visual Studio**. This project was created to practice application development, user interface design, and implementing calculator functionality using the .NET ecosystem.
+[![CI](https://github.com/mdnazrulislambd/ProCalculator_vs_1.0/actions/workflows/ci.yml/badge.svg)](https://github.com/mdnazrulislambd/ProCalculator_vs_1.0/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-## 📌 About the Project
-
-**ProCalculator VS 1.0** is a calculator application developed as a Visual Studio project.
-
-The project provides a practical example of building a desktop application with C# and organizing the application as a Visual Studio solution.
+A **scientific calculator for the console**, built with **C# and .NET 8**. It was created to practice C# programming, event-driven input handling and project organisation, and is now packaged for release.
 
 ## ✨ Features
 
-* 🧮 Calculator functionality
-* ➕ Addition
-* ➖ Subtraction
-* ✖️ Multiplication
-* ➗ Division
-* 🖥️ Desktop user interface
-* ⌨️ User input handling
-* ⚡ Quick calculation
+**Basic**
+- Addition, subtraction, multiplication, division (with divide-by-zero protection)
+- Percentage (`15% of 200`)
 
-> Features listed above should match the current implementation of the application. Update this section as additional functionality is added.
+**Scientific**
+- Square root, power, square, cube
+- Sin, cos, tan (angles in **degrees**)
+- Log (base 10), natural log (ln)
+- Factorial (0 to 170)
 
-## 🛠️ Technologies Used
+**Convenience**
+- Memory: store, recall, add (`M+`), subtract (`M-`), clear
+- Calculation history, shown as full expressions (`12 + 5 = 17`), with clear option
+- `ans` – reuse the last result in any number prompt; `mr` – reuse the memory value
+- Menu shortcuts: type `+`, `-`, `*`, `/`, `sqrt`, `sin`, `h`, `q` ... instead of a number
+- Default / Dark / Light console themes
+- Invalid input never crashes the app: you are simply asked again
+- Clear error messages (for example for `sqrt(-1)`, `tan(90)`, `log(0)`)
 
-* **C#**
-* **.NET**
-* **Visual Studio**
-* **Windows Desktop Development**
+## 🖥️ Quick start
 
-## 📂 Project Structure
+### Download (recommended)
 
-```text
-ProCalculator_vs_1.0/
-│
-├── .vs/
-│
-├── ProCalculator_VS_1.0/
-│   └── Application source code
-│
-├── ProCalculator_VS_1.0.sln
-│
-└── README.md
-```
+Go to the [Releases](https://github.com/mdnazrulislambd/ProCalculator_vs_1.0/releases) page and download the zip for your system (`win-x64` or `linux-x64`). The build is self-contained, so .NET does not need to be installed. Unzip and run `ProCalculator`.
 
-## 🚀 Getting Started
+### Build from source
 
-### Prerequisites
-
-Before running the project, install:
-
-* Visual Studio
-* Required .NET SDK/runtime
-* Windows operating system
-
-### 1. Clone the repository
+Requirements: [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) (Visual Studio 2022 is optional).
 
 ```bash
 git clone https://github.com/mdnazrulislambd/ProCalculator_vs_1.0.git
+cd ProCalculator_vs_1.0
+dotnet run --project ProCalculator_VS_1.0
 ```
 
-### 2. Open the solution
+In Visual Studio: open `ProCalculator_VS_1.0.sln` and press `F5`.
 
-Open:
+### Run the tests
 
-```text
-ProCalculator_VS_1.0.sln
+```bash
+dotnet test
 ```
 
-in **Visual Studio**.
+## 📂 Project structure
 
-### 3. Build the project
-
-In Visual Studio:
-
-```text
-Build → Build Solution
+```
+ProCalculator_vs_1.0/
+├── ProCalculator_VS_1.0/          # Application source
+│   ├── Program.cs                 # Entry point
+│   ├── CalculatorEngine.cs        # Menu loop and command handling
+│   ├── BasicOperations.cs         # + - * / %
+│   ├── ScientificOperations.cs    # Facade for scientific functions
+│   ├── Trigonometry.cs            # sin / cos / tan (degrees)
+│   ├── Logarithmic.cs             # log / ln
+│   ├── PowerOperations.cs         # power / square / cube
+│   ├── MemoryManager.cs           # memory store / recall / M+ / M-
+│   ├── HistoryManager.cs          # calculation history
+│   ├── ThemeManager.cs            # console themes
+│   ├── InputHandler.cs            # safe input parsing and shortcuts
+│   ├── OutputHandler.cs           # menu and output
+│   ├── NumberFormatter.cs         # consistent number formatting
+│   └── Validator.cs               # input checks
+├── ProCalculator_VS_1.0.Tests/    # xUnit tests
+├── .github/workflows/             # CI and release automation
+├── ProCalculator_VS_1.0.sln
+├── LICENSE
+└── README.md
 ```
 
-### 4. Run the application
+## 🚢 Making a release
 
-Press:
+Pushing a version tag builds the app and publishes a GitHub release automatically:
 
-```text
-F5
+```bash
+git tag v1.0.0
+git push origin v1.0.0
 ```
 
-or select:
+## 🔮 Ideas for the future
 
-```text
-Debug → Start Debugging
-```
-
-
-
-## 🎯 Project Goals
-
-This project was created to:
-
-* Practice C# programming
-* Learn desktop application development
-* Practice event-driven programming
-* Build a functional calculator application
-* Improve Visual Studio and .NET development skills
-* Practice organizing a software project
-
-## 🔮 Future Improvements
-
-Possible future improvements:
-
-* [ ] Add scientific calculator functions
-* [ ] Add calculation history
-* [ ] Add keyboard shortcuts
-* [ ] Add memory functions
-* [ ] Add percentage calculations
-* [ ] Add square root and power functions
-* [ ] Improve UI/UX
-* [ ] Add light/dark themes
-* [ ] Add unit tests
-* [ ] Create a release build
+- [ ] Graphical user interface (WPF / WinForms / MAUI)
+- [ ] Expression parsing (`2 + 3 * (4 - 1)`)
+- [ ] Radians / degrees mode switch
+- [ ] Save history to a file
+- [ ] Inverse trigonometric and hyperbolic functions
 
 ## 👨‍💻 Author
 
-**MD Nazrul Islam**
+**MD Nazrul Islam** – [@mdnazrulislambd](https://github.com/mdnazrulislambd)
 
-GitHub: [@mdnazrulislambd](https://github.com/mdnazrulislambd)
+Released under the [MIT License](LICENSE).
 
 ---
 
 ⭐ If you find this project useful, consider giving it a star.
-
-[![Architecture diagram of mdnazrulislambd/procalculator_vs_1.0](https://gitdiagram.com/mdnazrulislambd/procalculator_vs_1.0/diagram.png)](https://gitdiagram.com/mdnazrulislambd/procalculator_vs_1.0?utm_source=readme&utm_medium=picture)

@@ -1,0 +1,38 @@
+name: Release
+
+# Runs when a version tag such as v1.0.0 is pushed.
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Test
+        run: dotnet test ProCalculator_VS_1.0.sln -c Release
+
+      - name: Publish self-contained builds
+        run: |
+          for rid in win-x64 linux-x64; do
+            dotnet publish ProCalculator_VS_1.0/ProCalculator_VS_1.0.csproj \
+              -c Release -r "$rid" --self-contained true \
+              -p:PublishSingleFile=true -p:DebugType=None \
+              -o "publish/$rid"
+            (cd "publish/$rid" && zip -r "../../ProCalculator-${GITHUB_REF_NAME}-$rid.zip" .)
+          done
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ProCalculator-*.zip
+          generate_release_notes: true
